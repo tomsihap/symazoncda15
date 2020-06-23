@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Ajouter un nouveau produit</h1>
+
+    <form action="{{ path('product_create') }}" method="post">
+        <div class="form-group">
+            <label for="addProductFormTitle">Nom du produit</label>
+            <input id="addProductFormTitle" type="text" class="form-control" name="title">
+        </div>
+
+        <div class="form-group">
+            <label for="addProductFormDescription">Description</label>
+            <textarea id="addProductFormDescription" class="form-control" name="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="addProductFormQuantity">Quantité</label>
+            <input id="addProductFormQuantity" type="text" class="form-control" name="quantity">
+        </div>
+
+        <div class="form-group">
+            <label for="addProductFormPrice">Prix</label>
+            <input id="addProductFormPrice" type="text" class="form-control" name="price">
+        </div>
+
+        <button class="btn btn-primary float-right">Créer un produit</button>
+    </form>
+
+{% endblock %}

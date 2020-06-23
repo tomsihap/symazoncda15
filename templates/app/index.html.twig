@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Bienvenue sur la page d'accueil
+{% endblock %}
+
+{% block body %}
+
+    <div class="jumbotron">
+        <h1>Bienvenue sur {{ appName }}</h1>
+        <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur beatae dolorem eaque eius, enim minima mollitia nobis non, nulla officiis omnis reprehenderit ullam unde. A doloremque necessitatibus odit reiciendis! Tempore!
+        </p>
+        <p>
+            <a href="{{ path('product_index') }}" class="btn btn-primary">Liste des produits</a>
+            <a href="{{ path('product_new') }}" class="btn btn-secondary">Ajouter un produit</a>
+        </p>
+    </div>
+
+    <hr>
+
+    <h2>Les produits en stock</h2>
+
+    <div class="row">
+        {% for product in products %}
+            <div class="col-4 mb-1">
+                <div class="card"><img src="https://picsum.photos/400/400" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title }}</h5>
+                        <span class="badge badge-success">Quantité: {{ product.quantity }}</span>
+                        <span class="badge badge-primary">Prix: {{ product.price / 100 }} €</span>
+                        <p class="card-text">{{ product.description }}</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Voir le produit</a></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

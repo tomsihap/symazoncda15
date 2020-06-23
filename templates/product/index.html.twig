@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!{% endblock %}
+
+{% block body %}
+
+    <h1>Tous nos produits</h1>
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-4 mb-1">
+            <div class="card"><img src="https://picsum.photos/400/400" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.title }}</h5>
+                    <span class="badge badge-success">Quantité: {{ product.quantity }}</span>
+                    <span class="badge badge-primary">Prix: {{ product.price / 100 }} €</span>
+                    <p class="card-text">{{ product.description }}</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Voir le produit</a></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
