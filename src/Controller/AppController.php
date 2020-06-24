@@ -17,7 +17,7 @@ class AppController extends AbstractController
     public function index(ProductRepository $productRepository) : Response
     {
         return $this->render('app/index.html.twig', [
-            'products' => $productRepository->findAll()
+            'products' => $productRepository->findQuantityNotNull()
         ]);
     }
 }

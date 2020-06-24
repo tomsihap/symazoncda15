@@ -4,28 +4,37 @@
 
     <h1>Ajouter un nouveau produit</h1>
 
-    <form action="{{ path('product_create') }}" method="post">
+    {% if product is defined %}
+        <form action="{{ path('product_update', {product: product.id}) }}" method="post">
+    {% else %}
+        <form action="{{ path('product_create') }}" method="post">
+    {% endif %}
         <div class="form-group">
             <label for="addProductFormTitle">Nom du produit</label>
-            <input id="addProductFormTitle" type="text" class="form-control" name="title">
+            <input id="addProductFormTitle" type="text" class="form-control" name="title" value="{{ product.title | default('') }}">
         </div>
 
         <div class="form-group">
             <label for="addProductFormDescription">Description</label>
-            <textarea id="addProductFormDescription" class="form-control" name="description"></textarea>
+            <textarea id="addProductFormDescription" class="form-control" name="description">{{ product.description | default('') }}</textarea>
         </div>
 
         <div class="form-group">
             <label for="addProductFormQuantity">Quantité</label>
-            <input id="addProductFormQuantity" type="text" class="form-control" name="quantity">
+            <input id="addProductFormQuantity" type="text" class="form-control" name="quantity" value="{{ product.quantity | default('') }}">
         </div>
 
         <div class="form-group">
             <label for="addProductFormPrice">Prix</label>
-            <input id="addProductFormPrice" type="text" class="form-control" name="price">
+            <input id="addProductFormPrice" type="text" class="form-control" name="price" value="{{ product.price | default('') }}">
         </div>
 
-        <button class="btn btn-primary float-right">Créer un produit</button>
+        {% if product is defined %}
+            <button class="btn btn-warning float-right">Éditer un produit</button>
+        {% else %}
+            <button class="btn btn-primary float-right">Créer un produit</button>
+        {% endif %}
+
     </form>
 
 {% endblock %}

@@ -30,7 +30,7 @@
                         <span class="badge badge-success">Quantité: {{ product.quantity }}</span>
                         <span class="badge badge-primary">Prix: {{ product.price / 100 }} €</span>
                         <p class="card-text">{{ product.description }}</p>
-                        <a href="#" class="btn btn-sm btn-outline-primary">Voir le produit</a></div>
+                        <a href="{{ path('product_show', {product: product.id}) }}" class="btn btn-sm btn-outline-primary">Voir le produit</a></div>
                 </div>
             </div>
         {% endfor %}

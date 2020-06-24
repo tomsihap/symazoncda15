@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Tous nos produits</h1>
+
+    <div class="row">
+        <div class="col-12 mb-1">
+            <div class="card"><img src="https://picsum.photos/1024/1024" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.title }}</h5>
+                    <span class="badge badge-success">Quantité: {{ product.quantity }}</span>
+                    <span class="badge badge-primary">Prix: {{ product.price / 100 }} €</span>
+                    <p class="card-text">{{ product.description }}</p>
+
+
+                    <a href="{{ path('product_update', {product: product.id}) }}" class="btn btn-sm btn-outline-warning">Éditer le produit</a>
+
+                    <form action="{{ path('product_delete', {product: product.id}) }}" method="post">
+                        <button class="btn btn-sm btn-outline-danger">Supprimer le produit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
