@@ -9,10 +9,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class ProductController
+ * @package App\Controller
+ * @Route("/products")
+ */
 class ProductController extends AbstractController
 {
+
     /**
-     * @Route("/products", name="product_index", methods={"GET"})
+     * @Route("/", name="product_index", methods={"GET"})
      * @param ProductRepository $productRepository
      * @return Response
      */
@@ -21,12 +27,13 @@ class ProductController extends AbstractController
         $products = $productRepository->findAll();
 
         return $this->render('product/index.html.twig', [
-            'products' => $products
+            'products' => $products,
+            'title' => 'Tous nos produits'
         ]);
     }
 
     /**
-     * @Route("/products/new", name="product_new", methods={"GET"})
+     * @Route("/new", name="product_new", methods={"GET"})
      */
     public function new() : Response
     {
@@ -34,70 +41,83 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/products", name="product_create", methods={"POST"})
+     * @Route("/", name="product_create", methods={"POST"})
      */
     public function create(Request $request) : Response
     {
 
-        $product = new Product;
-        $product->setTitle( $request->request->get('title') );
-        $product->setDescription( $request->request->get('description') );
-        $product->setPrice( $request->request->get('price') );
-        $product->setQuantity( $request->request->get('quantity') );
+        $token = $request->request->get('token');
 
-        $manager = $this->getDoctrine()->getManager();
+        if ($this->isCsrfTokenValid('product-form', $token)) {
+            $product = new Product;
+            $product->setTitle( $request->request->get('title') );
+            $product->setDescription( $request->request->get('description') );
+            $product->setPrice( $request->request->get('price') );
+            $product->setQuantity( $request->request->get('quantity') );
 
-        $manager->persist($product);
-        $manager->flush();
+            $manager = $this->getDoctrine()->getManager();
+
+            $manager->persist($product);
+            $manager->flush();
+        }
 
         return $this->redirectToRoute("product_index");
     }
 
     /**
-     * @Route("/products/search", name="product_search", methods={"POST"})
+     * @Route("/search", name="product_search", methods={"GET"})
+     * @param Request $request
+     * @return Response
      */
     public function search(Request $request, ProductRepository $productRepository) : Response
     {
-        $search = $request->request->get('query');
-        $products = $productRepository->findBySearch($search);
+        $queryString = $request->query->get('query');
+        $products = $productRepository->findBySearch($queryString);
 
         return $this->render('product/index.html.twig', [
-            'products' => $products
+            'products' => $products,
+            'title' => 'Résultats de recherche'
         ]);
     }
 
     /**
-     * @Route("/products/{product}/edit", name="product_edit", methods={"GET"})
+     * @Route("/{product}/edit", name="product_edit", methods={"GET"})
      * @param Product $product
      * @return Response
      */
     public function edit(Product $product) : Response
     {
-        return  $this->render('product/new.html.twig', ['product' => $product]);
+        return  $this->render('product/new.html.twig', [
+            'product' => $product
+        ]);
     }
 
     /**
-     * @Route("/products/{product}/edit", name="product_update", methods={"POST"})
+     * @Route("/{product}", name="product_update", methods={"PATCH"})
      * @param Request $request
      * @param Product $product
      * @return Response
      */
     public function update(Request $request, Product $product) : Response
     {
-        $product->setTitle($request->request->get('title'));
-        $product->setDescription($request->request->get('description'));
-        $product->setQuantity($request->request->get('quantity'));
-        $product->setPrice($request->request->get('price'));
+        $token = $request->request->get('token');
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->persist($product);
-        $manager->flush();
+        if ($this->isCsrfTokenValid('product-form', $token)) {
+            $product->setTitle($request->request->get('title'));
+            $product->setDescription($request->request->get('description'));
+            $product->setQuantity($request->request->get('quantity'));
+            $product->setPrice($request->request->get('price'));
+
+            $manager = $this->getDoctrine()->getManager();
+            $manager->flush();
+        }
+
 
         return $this->redirectToRoute('product_show', ['product' => $product->getId()]);
     }
 
     /**
-     * @Route("/products/{product}/delete", name="product_delete", methods={"POST"})
+     * @Route("/{product}", name="product_delete", methods={"DELETE"})
      * @param Product $product
      * @return Response
      */
@@ -111,17 +131,16 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/products/{product}", name="product_show", methods={"GET"})
+     * @Route("/{product}", name="product_show", methods={"GET"})
+     * @param Product $product
+     * @return Response
      */
     public function show(Product $product) : Response
     {
-        /**
-         * Dans cette méthode, vous voyez qu'on injecte un objet Product $product (qui correspond au {product}
-         * de l'URL, on passe en fait un ID).
-         * Grâce à ce typage, Symfony est capable de comprendre qu'on passe un ID de... Produit !
-         * Du coup, pas besoin d'utiliser le Repository, l'objet $product recherché est directement là.
-         */
 
-        return  $this->render('product/show.html.twig', ['product' => $product]);
+        return $this->render('product/show.html.twig', [
+            'product' => $product
+        ] );
+
     }
 }

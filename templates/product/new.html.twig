@@ -6,9 +6,12 @@
 
     {% if product is defined %}
         <form action="{{ path('product_update', {product: product.id}) }}" method="post">
+        <input type="hidden" name="_method" value="patch">
     {% else %}
         <form action="{{ path('product_create') }}" method="post">
     {% endif %}
+
+        <input type="hidden" name="token" value="{{ csrf_token("product-form") }}">
         <div class="form-group">
             <label for="addProductFormTitle">Nom du produit</label>
             <input id="addProductFormTitle" type="text" class="form-control" name="title" value="{{ product.title | default('') }}">

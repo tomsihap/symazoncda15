@@ -21,18 +21,5 @@
 
     <h2>Les produits en stock</h2>
 
-    <div class="row">
-        {% for product in products %}
-            <div class="col-4 mb-1">
-                <div class="card"><img src="https://picsum.photos/400/400" alt="">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.title }}</h5>
-                        <span class="badge badge-success">Quantité: {{ product.quantity }}</span>
-                        <span class="badge badge-primary">Prix: {{ product.price / 100 }} €</span>
-                        <p class="card-text">{{ product.description }}</p>
-                        <a href="{{ path('product_show', {product: product.id}) }}" class="btn btn-sm btn-outline-primary">Voir le produit</a></div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+    {% include '_partials/product_list.html.twig' %}
 {% endblock %}

@@ -13,9 +13,11 @@
                     <p class="card-text">{{ product.description }}</p>
 
 
-                    <a href="{{ path('product_update', {product: product.id}) }}" class="btn btn-sm btn-outline-warning">Éditer le produit</a>
+                    <a href="{{ path('product_edit', {product: product.id}) }}" class="btn btn-sm btn-outline-warning">Éditer le produit</a>
 
                     <form action="{{ path('product_delete', {product: product.id}) }}" method="post">
+
+                        <input type="hidden" name="_method" value="delete">
                         <button class="btn btn-sm btn-outline-danger">Supprimer le produit</button>
                     </form>
                 </div>
