@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,36 +35,28 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="product_new", methods={"GET"})
+     * @Route("/new", name="product_new", methods={"GET", "POST"})
      */
-    public function new() : Response
-    {
-        return $this->render('product/new.html.twig');
-    }
-
-    /**
-     * @Route("/", name="product_create", methods={"POST"})
-     */
-    public function create(Request $request) : Response
+    public function new(Request $request) : Response
     {
 
-        $token = $request->request->get('token');
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
 
-        if ($this->isCsrfTokenValid('product-form', $token)) {
-            $product = new Product;
-            $product->setTitle( $request->request->get('title') );
-            $product->setDescription( $request->request->get('description') );
-            $product->setPrice( $request->request->get('price') );
-            $product->setQuantity( $request->request->get('quantity') );
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
-
             $manager->persist($product);
             $manager->flush();
+
+            return $this->redirectToRoute('product_index');
         }
 
-        return $this->redirectToRoute("product_index");
+        return $this->render('product/form.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
+
 
     /**
      * @Route("/search", name="product_search", methods={"GET"})
@@ -81,39 +75,27 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{product}/edit", name="product_edit", methods={"GET"})
+     * @Route("/{product}/edit", name="product_edit", methods={"GET", "POST"})
      * @param Product $product
      * @return Response
      */
-    public function edit(Product $product) : Response
+    public function edit(Request $request, Product $product) : Response
     {
-        return  $this->render('product/new.html.twig', [
-            'product' => $product
-        ]);
-    }
 
-    /**
-     * @Route("/{product}", name="product_update", methods={"PATCH"})
-     * @param Request $request
-     * @param Product $product
-     * @return Response
-     */
-    public function update(Request $request, Product $product) : Response
-    {
-        $token = $request->request->get('token');
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
 
-        if ($this->isCsrfTokenValid('product-form', $token)) {
-            $product->setTitle($request->request->get('title'));
-            $product->setDescription($request->request->get('description'));
-            $product->setQuantity($request->request->get('quantity'));
-            $product->setPrice($request->request->get('price'));
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             $manager->flush();
+
+            return $this->redirectToRoute('product_show', ['product' => $product->getId()]);
         }
 
-
-        return $this->redirectToRoute('product_show', ['product' => $product->getId()]);
+        return  $this->render('product/form.html.twig', [
+            'product' => $product,
+            'form' => $form->createView()
+        ]);
     }
 
     /**

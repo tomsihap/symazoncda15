@@ -12,6 +12,13 @@
                     <span class="badge badge-primary">Prix: {{ product.price / 100 }} €</span>
                     <p class="card-text">{{ product.description }}</p>
 
+                    <h3>
+                        Catégorie :
+                        <a href="{{ path('category_show', {category: product.category.id}) }}">
+                            {{ product.category.title }}
+                        </a>
+                    </h3>
+
 
                     <a href="{{ path('product_edit', {product: product.id}) }}" class="btn btn-sm btn-outline-warning">Éditer le produit</a>
 
